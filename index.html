@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Controle RDC – Presenças XD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-S..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary:      #1a56db;
+            --primary-dark: #1447c0;
+            --primary-light:#dbeafe;
+            --success:      #059669;
+            --success-bg:   #d1fae5;
+            --danger:       #dc2626;
+            --danger-bg:    #fee2e2;
+            --pending:      #64748b;
+            --pending-bg:   #f1f5f9;
+            --light:        #f8fafc;
+            --gray:         #64748b;
+            --dark:         #0f172a;
+            --border:       #e2e8f0;
+            --surface:      #ffffff;
+            --bg:           #f0f4f8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+            padding: 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 1.1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+
+        .header-sub {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            font-weight: 400;
+            margin-top: 1px;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: #94a3b8;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 0.35rem 0.9rem;
+            white-space: nowrap;
+        }
+
+        .subtitle strong { color: #e2e8f0; }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 1.75rem 1.5rem;
+        }
+
+        /* ── CARDS ── */
+        .card {
+            background: var(--surface);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .card-header-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .card h3 {
+            color: var(--dark);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        form#form-colab {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem 1.25rem;
+        }
+
+        .form-group { display: flex; flex-direction: column; }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        input, select {
+            padding: 0.6rem 0.85rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-family: inherit;
+            background: #f8fafc;
+            transition: all 0.15s ease;
+            color: var(--dark);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+        }
+
+        /* ── BUTTONS ── */
+        .btn {
+            padding: 0.58rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.88rem;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,86,219,0.35); }
+
+        .btn-secondary { background: #f1f5f9; color: #475569; border: 1px solid var(--border); }
+        .btn-secondary:hover { background: #e2e8f0; }
+
+        /* ── GRUPO FORNECEDOR ── */
+        .grupo-fornecedor {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            margin: 1.5rem 0 0.85rem;
+        }
+
+        /* ── TABLE ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        th, td { padding: 11px 16px; text-align: left; }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.1s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #f8faff; }
+
+        td { font-size: 0.92rem; }
+
+        /* ── STATUS BADGES ── */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.28rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-No_Local    { background: var(--success-bg); color: var(--success); }
+        .status-Em_Deslocamento { background: var(--danger-bg); color: var(--danger); }
+        .status-pendente    { background: var(--pending-bg); color: var(--pending); }
+
+        .status-icon { font-size: 0.75em; }
+
+        /* ── ACTION BUTTONS ── */
+        .btn-action {
+            padding: 0.38rem 0.85rem;
+            font-size: 0.8rem;
+            border-radius: 7px;
+        }
+
+        .btn-No_Local       { background: var(--success); color: white; }
+        .btn-No_Local:hover { background: #047857; }
+        .btn-Em_Deslocamento { background: var(--danger); color: white; }
+        .btn-Em_Deslocamento:hover { background: #b91c1c; }
+        .btn-edit   { background: #f59e0b; color: white; }
+        .btn-edit:hover { background: #d97706; }
+        .btn-delete { background: #ef4444; color: white; }
+        .btn-delete:hover { background: #dc2626; }
+
+        /* ── DASHBOARD ── */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .dashboard-card {
+            border-radius: 14px;
+            padding: 1.3rem 1.4rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            min-height: 110px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: -20px; right: -20px;
+            width: 90px; height: 90px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+        }
+
+        .dashboard-card h6 {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 0.4rem;
+        }
+
+        .dashboard-card h2 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            line-height: 1;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .dashboard-card .dash-icon {
+            font-size: 2rem;
+            opacity: 0.2;
+            flex-shrink: 0;
+        }
+
+        .bg-danger  { background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); }
+        .bg-success { background: linear-gradient(135deg, #10b981 0%, #065f46 100%); }
+        .bg-primary { background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%); }
+
+        /* ── ACTIONS PANEL ── */
+        .actions-panel {
+            background: white;
+            border-radius: 14px;
+            padding: 1.2rem 1.4rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            border: 1.5px solid var(--primary-light);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            min-width: 320px;
+            max-width: 90vw;
+        }
+
+        .actions-panel.hidden { display: none; }
+
+        .actions-panel .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .panel-status-text {
+            font-size: 0.83rem;
+            color: var(--gray);
+            margin-top: 0.2rem;
+        }
+
+        .actions-panel .panel-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        /* Overlay para modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .modal-overlay.active { display: block; }
+
+        .clickable-row {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .clickable-row:hover {
+            background: #f0f9ff !important;
+        }
+
+        .clickable-name {
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px dashed var(--primary-light);
+            transition: color 0.15s;
+        }
+
+        .clickable-name:hover { color: var(--primary-dark); border-bottom-color: var(--primary); }
+
+        .resumo-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 600;
+        }
+
+        .print-actions { text-align: center; margin: 2rem 0 1rem; }
+
+        .btn-print {
+            padding: 0.75rem 2rem;
+            font-size: 0.95rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.18s;
+        }
+
+        .btn-print:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,86,219,0.35); }
+
+        .no-print { display: block; }
+        .only-print { display: none; }
+
+        /* tipo badge */
+        .tipo-badge {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        @media print {
+            body { background: white; font-size: 10pt; }
+            .container { max-width: none; padding: 0; margin: 0; }
+            header, .card, .print-actions, .no-print { display: none !important; }
+            .only-print { display: block !important; }
+            .grupo-fornecedor {
+                font-size: 13pt;
+                margin: 18px 0 8px;
+                border-bottom: 1px solid #000;
+            }
+            table { box-shadow: none; page-break-inside: avoid; font-size: 9.5pt; }
+            th, td { padding: 6px 8px; }
+            .resumo {
+                border: 1px solid #666;
+                padding: 12px;
+                margin: 18px 0;
+                page-break-inside: avoid;
+            }
+            @page { size: A4 portrait; margin: 16mm 14mm 14mm 14mm; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <div class="header-brand">
+            <div class="header-logo"><i class="fas fa-clipboard-user"></i></div>
+            <div>
+                <h1>Controle de Colaboradores XD</h1>
+                <div class="header-sub">Gestão de Presenças · Fornecedor D0/XD</div>
+            </div>
+        </div>
+        <div class="subtitle">
+            <strong id="data-atual"></strong>
+            <span class="only-print"> &mdash; <strong id="hora-atual"></strong></span>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <!-- CADASTRO / EDIÇÃO -->
+    <div class="card no-print">
+        <div class="card-header">
+            <div class="card-header-icon"><i class="fas fa-user-plus"></i></div>
+            <h3 id="form-title">Cadastrar Colaborador</h3>
+        </div>
+        <form id="form-colab">
+            <div class="form-group">
+                <label>Nome completo</label>
+                <input type="text" id="nome" required>
+            </div>
+            <div class="form-group">
+                <label>Fornecedor</label>
+                <select id="agencia" required>
+                    <!--<option value="">Selecione...</option>-->
+                    <option value="XD">XD</option>
+                    <!--<option value="DO">D0</option>
+                    <option value="Enfok">Enfok</option>
+                    <option value="Mission">Mission</option>
+                    <option value="Polly">Polly</option>-->
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tipo</label>
+                <select id="tipo" required>
+                    <option value="D">Diarista</option>
+                    <option value="F">Fixo</option>
+                </select>
+            </div>
+            <div class="form-group" style="align-self: end; display: flex; gap: 0.8rem;">
+                <button type="button" class="btn btn-primary" onclick="salvarColaborador()">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+                <button type="button" id="btn-cancelar" class="btn btn-secondary" onclick="cancelarEdicao()" style="display:none;">
+                    <i class="fas fa-ban"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="card" style="padding-bottom:1.25rem;">
+        <div class="dashboard-grid">
+            <div class="dashboard-card bg-danger">
+                <div>
+                    <h6>Em Deslocamento</h6>
+                    <h2 id="deslocamento-count">0</h2>
+                </div>
+                <i class="fa-solid fa-user dash-icon fa-3x"></i>
+            </div>
+            <div class="dashboard-card bg-success">
+                <div>
+                    <h6>No Local</h6>
+                    <h2 id="nolocal-count">0</h2>
+                </div>
+                <i class="fas fa-users dash-icon fa-3x"></i>
+            </div>
+            <div class="dashboard-card bg-primary">
+                <div>
+                    <h6>Total</h6>
+                    <h2 id="total-count">0</h2>
+                </div>
+                <i class="fa-solid fa-clipboard-user dash-icon fa-3x"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN ACTIONS -->
+    <div class="card no-print">
+        <div class="card-header">
+            <div class="card-header-icon"><i class="fas fa-cogs"></i></div>
+            <h3>Ações Administrativas</h3>
+        </div>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button type="button" class="btn btn-danger" onclick="clearAllData()" style="background: #dc2626; color: white;">
+                <i class="fas fa-trash-alt"></i> Excluir Todos os Dados
+            </button>
+        </div>
+    </div>
+
+    <div id="row-actions-panel" class="actions-panel no-print hidden">
+        <div class="panel-header">
+            <div>
+                <div class="panel-name" id="panel-colab-name"></div>
+                <div class="panel-status-text" id="panel-colab-status"></div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="closeRowActions()">Fechar</button>
+        </div>
+        <div class="panel-actions">
+            <button type="button" class="btn btn-No_Local btn-action" onclick="marcarAtivo('P')">
+                <i class="fas fa-check"></i> No Local
+            </button>
+            <button type="button" class="btn btn-Em_Deslocamento btn-action" onclick="marcarAtivo('X')">
+                <i class="fas fa-times"></i> Em Deslocamento
+            </button>
+            <button type="button" class="btn btn-edit btn-action" onclick="editarSelecionado()">
+                <i class="fas fa-edit"></i> Editar
+            </button>
+            <button type="button" class="btn btn-delete btn-action" onclick="deletarSelecionado()">
+                <i class="fas fa-trash"></i> Excluir
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div id="modal-overlay" class="modal-overlay"></div>
+
+    <!-- TABELAS DE PRESENÇA -->
+    <div id="tabelas-presenca"></div>
+
+    <div class="print-actions no-print">
+        <button class="btn-print" onclick="gerarRelatorio()">
+            <i class="fas fa-print"></i> Imprimir Relatório
+        </button>
+    </div>
+
+</div>
+
+<script type="module">
+import { DB } from './bd.js';
+
+const hoje = new Date().toISOString().slice(0,10);
+const keyPres  = `rdc_pres_${hoje}`;
+const keyColabs = "rdc_colabs";
+const agencyFilter = ["XD"];
+
+let colaboradores = JSON.parse(localStorage.getItem(keyColabs)) || [];
+let presencas     = JSON.parse(localStorage.getItem(keyPres))  || {};
+let editandoIndex = null;
+let selectedNome = null;
+
+const dataElement = document.getElementById("data-atual");
+const panel = document.getElementById("row-actions-panel");
+const panelName = document.getElementById("panel-colab-name");
+const panelStatus = document.getElementById("panel-colab-status");
+const modalOverlay = document.getElementById("modal-overlay");
+
+dataElement.textContent = new Date().toLocaleDateString("pt-BR", {
+    weekday: "long", day: "2-digit", month: "long", year: "numeric"
+});
+
+function normalizeColaboradores(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) return data.filter(Boolean);
+    return Object.values(data).filter(Boolean);
+}
+
+async function initApp() {
+    // Carregar dados locais primeiro para resposta imediata
+    colaboradores = JSON.parse(localStorage.getItem(keyColabs)) || [];
+    presencas = JSON.parse(localStorage.getItem(keyPres)) || {};
+
+    // Tentar sincronizar com Firebase em background
+    try {
+        const [firebaseCols, firebasePres] = await Promise.all([
+            DB.readPath('colaboradores'),
+            DB.readPath('presencas')
+        ]);
+
+        if (firebaseCols) colaboradores = normalizeColaboradores(firebaseCols);
+        if (firebasePres) presencas = firebasePres;
+
+        // Salvar localmente após sincronizar
+        localStorage.setItem(keyColabs, JSON.stringify(colaboradores));
+        localStorage.setItem(keyPres, JSON.stringify(presencas));
+    } catch (error) {
+        console.warn('Não foi possível sincronizar com BD, usando dados locais:', error);
+    }
+
+    colaboradores.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' }));
+    atualizarPresenca();
+
+    // Event listener para fechar modal ao clicar no overlay
+    modalOverlay.addEventListener('click', closeRowActions);
+}
+
+async function salvarDados() {
+    // Salvar localmente primeiro para resposta imediata
+    localStorage.setItem(keyColabs, JSON.stringify(colaboradores));
+    localStorage.setItem(keyPres, JSON.stringify(presencas));
+
+    // Salvar no Firebase em paralelo (não bloquear UI)
+    Promise.all([
+        DB.writePath('colaboradores', colaboradores),
+        DB.writePath('presencas', presencas)
+    ]).catch(error => {
+        console.warn('Erro ao salvar no Firebase:', error);
+        // Dados permanecem no localStorage
+    });
+}
+
+function getFilteredColaboradores() {
+    return colaboradores.filter(c => agencyFilter.includes(c.agencia));
+}
+
+function preencherFormulario(index) {
+    const colab = getFilteredColaboradores()[index];
+    if (!colab) return;
+
+    const globalIndex = colaboradores.findIndex(c => c.nome === colab.nome && agencyFilter.includes(c.agencia));
+    if (globalIndex < 0) return;
+
+    document.getElementById("nome").value    = colab.nome;
+    document.getElementById("agencia").value = colab.agencia;
+    document.getElementById("tipo").value    = colab.tipo;
+
+    document.getElementById("form-title").textContent = "Editar Colaborador";
+    document.getElementById("btn-cancelar").style.display = "inline-block";
+    editandoIndex = globalIndex;
+}
+
+function cancelarEdicao() {
+    document.getElementById("form-colab").reset();
+    document.getElementById("form-title").textContent = "Cadastrar Colaborador";
+    document.getElementById("btn-cancelar").style.display = "none";
+    editandoIndex = null;
+}
+
+function excluirColaborador(nome) {
+    if (!confirm("Deseja realmente excluir este colaborador?\nTodas as marcações associadas serão removidas.")) return;
+
+    const index = colaboradores.findIndex(c => c.nome === nome && agencyFilter.includes(c.agencia));
+    if (index < 0) return;
+
+    colaboradores.splice(index, 1);
+    delete presencas[nome];
+
+    salvarDados();
+    atualizarPresenca();
+    closeRowActions();
+    if (editandoIndex === index) cancelarEdicao();
+}
+
+function salvarColaborador() {
+    const nome    = document.getElementById("nome").value.trim();
+    const agencia = document.getElementById("agencia").value;
+    const tipo    = document.getElementById("tipo").value;
+
+    if (!nome || !agencia || !tipo) {
+        alert("Preencha todos os campos.");
+        return;
+    }
+
+    const nomeLower = nome.toLowerCase();
+
+    if (editandoIndex === null) {
+        if (colaboradores.some(c => c.nome.toLowerCase() === nomeLower)) {
+            alert("Já existe um colaborador com este nome.");
+            return;
+        }
+        colaboradores.push({ nome, agencia, tipo });
+    } else {
+        const oldNome = colaboradores[editandoIndex].nome;
+        const oldNomeLower = oldNome.toLowerCase();
+
+        if (oldNomeLower !== nomeLower && colaboradores.some(c => c.nome.toLowerCase() === nomeLower)) {
+            alert("Já existe um colaborador com este nome.");
+            return;
+        }
+
+        if (oldNome !== nome) {
+            delete presencas[oldNome];
+        }
+
+        colaboradores[editandoIndex] = { nome, agencia, tipo };
+    }
+
+    colaboradores.sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' }));
+    salvarDados();
+    cancelarEdicao();
+    atualizarPresenca();
+}
+
+function marcar(nome, status) {
+    if (!nome) return;
+    presencas[nome] = status;
+    salvarDados();
+    atualizarPresenca();
+    updatePanel(nome);
+}
+
+function marcarAtivo(status) {
+    if (!selectedNome) return;
+    marcar(selectedNome, status);
+}
+
+function editarSelecionado() {
+    if (!selectedNome) return;
+    const filteredIndex = getFilteredColaboradores().findIndex(c => c.nome === selectedNome);
+    if (filteredIndex >= 0) preencherFormulario(filteredIndex);
+}
+
+function deletarSelecionado() {
+    if (!selectedNome) return;
+    excluirColaborador(selectedNome);
+}
+
+function openRowActions(nome) {
+    selectedNome = nome;
+    updatePanel(nome);
+    panel.classList.remove('hidden');
+    modalOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Previne scroll
+}
+
+function closeRowActions() {
+    selectedNome = null;
+    panel.classList.add('hidden');
+    modalOverlay.classList.remove('active');
+    document.body.style.overflow = ''; // Restaura scroll
+}
+
+function updatePanel(nome) {
+    const st = presencas[nome];
+    const statusTxt = (!st) ? 'Pendente' : (st === 'P' ? 'No Local' : 'Em Deslocamento');
+    panelName.textContent = nome;
+    panelStatus.textContent = `Status atual: ${statusTxt}`;
+}
+
+function gerarRelatorio() {
+    document.getElementById("hora-atual").textContent = new Date().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"});
+    window.print();
+}
+
+function atualizarPresenca() {
+    const container = document.getElementById("tabelas-presenca");
+    container.innerHTML = "";
+
+    const lista = getFilteredColaboradores();
+    const grupos = {};
+    agencyFilter.forEach(ag => grupos[ag] = []);
+
+    lista.forEach(c => {
+        if (grupos[c.agencia]) grupos[c.agencia].push(c);
+    });
+
+    let deslocamento = 0;
+    let nolocal = 0;
+
+    agencyFilter.forEach(forn => {
+        const listaForn = grupos[forn];
+        if (!listaForn?.length) return;
+
+        let html = `<div class="grupo-fornecedor">${forn}</div>
+            <table>
+                <thead><tr>
+                    <th>Nome</th>
+                    <th style="width:100px;">Tipo</th>
+                    <th style="width:140px;">Status</th>
+                </tr></thead>
+            <tbody>`;
+
+        listaForn.forEach((c) => {
+            let st = presencas[c.nome];
+            const isPendente       = (st === undefined || st === null || st === '');
+            const isNoLocal        = (st === 'P');
+            const isEmDeslocamento = (st === 'X');
+
+            const statusTxt  = isPendente ? 'Pendente' : isNoLocal ? 'No Local' : 'Em Deslocamento';
+            const statusIcon = isPendente
+                ? '<i class="fas fa-clock status-icon"></i>'
+                : isNoLocal
+                    ? '<i class="fas fa-check-circle status-icon"></i>'
+                    : '<i class="fas fa-times-circle status-icon"></i>';
+            const statusCls  = isPendente ? 'status-pendente' : isNoLocal ? 'status-No_Local' : 'status-Em_Deslocamento';
+
+            if (isNoLocal)        nolocal      += 1;
+            if (isEmDeslocamento) deslocamento += 1;
+
+            const tipoLabel = c.tipo === "F" ? "Fixo" : "Diarista";
+
+            html += `<tr class="clickable-row" onclick="openRowActions('${c.nome.replace(/'/g,"\\'")}')">
+                <td><span class="clickable-name">${c.nome}</span></td>
+                <td><span class="tipo-badge">${tipoLabel}</span></td>
+                <td><span class="status-badge ${statusCls}">${statusIcon}${statusTxt}</span></td>
+            </tr>`;
+        });
+
+        html += `</tbody></table>`;
+        container.insertAdjacentHTML("beforeend", html);
+    });
+
+    if (!lista.length) {
+        container.innerHTML = `<div class="card"><p>Nenhum colaborador cadastrado.</p></div>`;
+    }
+
+    document.getElementById("deslocamento-count").textContent = deslocamento;
+    document.getElementById("nolocal-count").textContent = nolocal;
+    document.getElementById("total-count").textContent = deslocamento + nolocal;
+
+    salvarDados();
+}
+
+async function clearAllData() {
+    if (!confirm("ATENÇÃO: Esta ação irá excluir TODOS os dados de colaboradores e presenças permanentemente!\n\nDeseja continuar?")) return;
+
+    try {
+        // Limpar Firebase
+        await Promise.all([
+            DB.deletePath('colaboradores'),
+            DB.deletePath('presencas')
+        ]);
+
+        // Limpar localStorage
+        localStorage.removeItem(keyColabs);
+        localStorage.removeItem(keyPres);
+
+        // Resetar variáveis locais
+        colaboradores = [];
+        presencas = {};
+        editandoIndex = null;
+        selectedNome = null;
+
+        // Fechar painel se aberto
+        closeRowActions();
+
+        // Limpar formulário
+        cancelarEdicao();
+
+        // Atualizar interface
+        atualizarPresenca();
+
+        alert("Todos os dados foram excluídos com sucesso.");
+    } catch (error) {
+        console.error('Erro ao excluir dados:', error);
+        alert("Erro ao excluir dados. Verifique o console para mais detalhes.");
+    }
+}
+
+window.salvarColaborador = salvarColaborador;
+window.cancelarEdicao = cancelarEdicao;
+window.preencherFormulario = preencherFormulario;
+window.excluirColaborador = excluirColaborador;
+window.marcar = marcar;
+window.marcarAtivo = marcarAtivo;
+window.editarSelecionado = editarSelecionado;
+window.deletarSelecionado = deletarSelecionado;
+window.openRowActions = openRowActions;
+window.closeRowActions = closeRowActions;
+window.gerarRelatorio = gerarRelatorio;
+window.clearAllData = clearAllData;
+window.DB = DB;
+
+initApp();
+</script>
+</body>
+</html>
